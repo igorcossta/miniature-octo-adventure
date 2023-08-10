@@ -1,0 +1,4 @@
+name: ColorWar
+version: '${project.version}'
+main: io.igorcossta.Plugin
+api-version: '1.20'
