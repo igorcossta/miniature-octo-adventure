@@ -1,7 +1,7 @@
 package io.igorcossta.listener.player;
 
-import io.igorcossta.Plugin;
 import io.igorcossta.manager.ColorWarManager;
+import io.igorcossta.Plugin;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

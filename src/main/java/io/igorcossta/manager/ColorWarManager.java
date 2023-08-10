@@ -3,8 +3,10 @@ package io.igorcossta.manager;
 import io.igorcossta.Plugin;
 import io.igorcossta.event.Cause;
 import io.igorcossta.event.custom.PlayerJoinWarEvent;
+import io.igorcossta.event.custom.WarOpenEvent;
 import io.igorcossta.event.custom.WarStartEvent;
 import io.igorcossta.event.custom.WarStopEvent;
+import io.igorcossta.runnable.StartWarRunnable;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -27,7 +29,6 @@ public class ColorWarManager {
     private Set<String> participants = new HashSet<>();
     private boolean isRunning = false;
     private boolean isWarStarted = false;
-    private BukkitRunnable taskWar;
 
     public void playerJoin(Player player) {
         participants.add(player.getName());
@@ -112,5 +113,13 @@ public class ColorWarManager {
         // call the event when the color-war pvp is enabled
         WarStartEvent warStartEvent = new WarStartEvent(participants);
         plugin.getServer().getPluginManager().callEvent(warStartEvent);
+    }
+
+    public void openWar() {
+
+        isRunning = true;
+        // call the event when the war is open to join
+        WarOpenEvent warOpenEvent = new WarOpenEvent();
+        plugin.getServer().getPluginManager().callEvent(warOpenEvent);
     }
 }

@@ -38,11 +38,6 @@ public final class Plugin extends JavaPlugin {
         ListenerRegistry.of().register();
     }
 
-    @Override
-    public void onDisable() {
-        getColorWarManager().getTaskWar().cancel();
-    }
-
     private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;

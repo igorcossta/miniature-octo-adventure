@@ -11,7 +11,7 @@ import java.time.temporal.ChronoUnit;
 
 public class StartWarRunnable extends BukkitRunnable {
     private final ColorWarManager colorWarManager = Plugin.getColorWarManager();
-    private final LocalDateTime initiatedAt = LocalDateTime.now();
+    private LocalDateTime initiatedAt = LocalDateTime.now();
 
     @Override
     public void run() {
@@ -36,7 +36,6 @@ public class StartWarRunnable extends BukkitRunnable {
 
     private void startWar(long minutesPassed) {
         if (minutesPassed >= 1) {
-            Bukkit.getLogger().info("[timer task] Enabling PvP");
 
             if (colorWarManager.getParticipants().isEmpty()) {
                 stopEvent(99, Cause.NON_PARTICIPANTS); // force the event to stop
@@ -48,6 +47,7 @@ public class StartWarRunnable extends BukkitRunnable {
                 return;
             }
 
+            Bukkit.getLogger().info("[timer task] Enabling PvP");
             colorWarManager.startWar();
         }
     }
@@ -55,6 +55,7 @@ public class StartWarRunnable extends BukkitRunnable {
     private void stopEvent(long minutesPassed, Cause cause) {
         if (minutesPassed >= 2) { // the event should be close after 10 minutes
             Bukkit.getLogger().info("[timer task] Closing event");
+            this.initiatedAt = null;
             colorWarManager.stopWar(cause);
             this.cancel(); // Stop the task
         }
