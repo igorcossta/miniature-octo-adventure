@@ -1,7 +1,8 @@
 package io.igorcossta.listener.player;
 
-import io.igorcossta.manager.ColorWarManager;
 import io.igorcossta.Plugin;
+import io.igorcossta.config.GameConfigMessages;
+import io.igorcossta.manager.ColorWarManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -9,6 +10,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerQuitWarListener implements Listener {
     private final ColorWarManager colorWarManager = Plugin.getColorWarManager();
+    private final GameConfigMessages messages = Plugin.getConfigurationManager().getGameMessages();
 
     @EventHandler
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
@@ -18,7 +20,7 @@ public class PlayerQuitWarListener implements Listener {
             return; // if player is not in the event then do nothing
 
         player.teleport(colorWarManager.getColorWarLocations().getExitLocation());
-        colorWarManager.broadcastToEvent("%s quit".formatted(player.getName()));
+        colorWarManager.broadcastToEvent(messages.sendQuitMessage(player.getName()));
 
         colorWarManager.clearInventory(player);
         colorWarManager.participantQuit(player.getName());

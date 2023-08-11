@@ -1,9 +1,9 @@
 package io.igorcossta.listener.player;
 
 import io.igorcossta.Plugin;
+import io.igorcossta.config.GameConfigMessages;
 import io.igorcossta.event.custom.PlayerDieInWarEvent;
 import io.igorcossta.manager.ColorWarManager;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 public class PlayerDamageListener implements org.bukkit.event.Listener {
     private final Plugin plugin = Plugin.getInstance();
     private final ColorWarManager colorWarManager = Plugin.getColorWarManager();
+    private final GameConfigMessages messages = Plugin.getConfigurationManager().getGameMessages();
 
     @EventHandler
     public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
@@ -29,7 +30,7 @@ public class PlayerDamageListener implements org.bukkit.event.Listener {
         // when participants are in the lobby the PvP is not allowed
         if (!colorWarManager.isWarStarted()) {
             event.setCancelled(true);
-            attacker.sendMessage(Component.text("The war is not started yet!"));
+            attacker.sendMessage(messages.sendWarNotStartedMessage());
             return;
         }
 

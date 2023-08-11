@@ -1,15 +1,16 @@
 package io.igorcossta.command;
 
 import io.igorcossta.Plugin;
+import io.igorcossta.config.GameConfigMessages;
 import io.igorcossta.manager.ColorWarManager;
 import me.saiintbrisson.minecraft.command.annotation.Command;
 import me.saiintbrisson.minecraft.command.command.Context;
 import me.saiintbrisson.minecraft.command.target.CommandTarget;
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 public class PlayerCommand {
     private final ColorWarManager colorWarManager = Plugin.getColorWarManager();
+    private final GameConfigMessages messages = Plugin.getConfigurationManager().getGameMessages();
 
     @Command(
             name = "join",
@@ -21,22 +22,22 @@ public class PlayerCommand {
         Player p = context.getSender();
 
         if (!colorWarManager.isRunning()) {
-            p.sendMessage(Component.text("The Color War event is not open. Try later!"));
+            p.sendMessage(messages.sendWarNotOpenMessage());
             return;
         }
 
         if (colorWarManager.isParticipating(p.getName())) {
-            p.sendMessage(Component.text("You are already participating"));
+            p.sendMessage(messages.sendAlreadyInWarMessage());
             return;
         }
 
         if (colorWarManager.isWarStarted()) {
-            p.sendMessage(Component.text("You can't join in the event anymore"));
+            p.sendMessage(messages.sendTooLateToJoinMessage());
             return;
         }
 
         if (!p.getInventory().isEmpty()) {
-            p.sendMessage(Component.text("You must empty your inventory before join the event."));
+            p.sendMessage(messages.sendMustEmptyInventoryMessage());
             return;
         }
 

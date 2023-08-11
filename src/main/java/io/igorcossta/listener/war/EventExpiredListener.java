@@ -1,9 +1,9 @@
 package io.igorcossta.listener.war;
 
 import io.igorcossta.Plugin;
+import io.igorcossta.config.GameConfigMessages;
 import io.igorcossta.event.custom.WarStopEvent;
 import io.igorcossta.manager.ColorWarManager;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,6 +13,7 @@ import java.util.List;
 
 public class EventExpiredListener implements Listener {
     private final ColorWarManager colorWarManager = Plugin.getColorWarManager();
+    private final GameConfigMessages messages = Plugin.getConfigurationManager().getGameMessages();
 
     @EventHandler
     public void onWarStopEvent(WarStopEvent event) {
@@ -22,6 +23,6 @@ public class EventExpiredListener implements Listener {
             i.teleport(colorWarManager.getColorWarLocations().getExitLocation());
             i.getInventory().clear();
         });
-        Bukkit.getServer().sendMessage(Component.text(event.getCause().getMessage()));
+        Bukkit.getServer().sendMessage(messages.sendWarIsClosedMessage(event.getCause().getMessage()));
     }
 }

@@ -1,19 +1,18 @@
 package io.igorcossta.manager;
 
 import io.igorcossta.Plugin;
+import io.igorcossta.config.GameConfigMessages;
 import io.igorcossta.event.Cause;
 import io.igorcossta.event.custom.PlayerJoinWarEvent;
 import io.igorcossta.event.custom.WarOpenEvent;
 import io.igorcossta.event.custom.WarStartEvent;
 import io.igorcossta.event.custom.WarStopEvent;
-import io.igorcossta.runnable.StartWarRunnable;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +25,7 @@ public class ColorWarManager {
     private final Plugin plugin = Plugin.getInstance();
     private final Economy econ = Plugin.getEcon();
     private final ColorWarLocations colorWarLocations = new ColorWarLocations();
+    private final GameConfigMessages messages = Plugin.getConfigurationManager().getGameMessages();
     private Set<String> participants = new HashSet<>();
     private boolean isRunning = false;
     private boolean isWarStarted = false;
@@ -62,7 +62,7 @@ public class ColorWarManager {
             return;
         }
         Player player = Bukkit.getPlayer(winner);
-        Bukkit.getServer().sendMessage(Component.text("%s won the color war!".formatted(winner)));
+        Bukkit.getServer().sendMessage(messages.sendVictoryMessage(winner));
 
         clearInventory(player);
         player.teleport(colorWarLocations.getExitLocation());
@@ -78,11 +78,11 @@ public class ColorWarManager {
         return participants.contains(player);
     }
 
-    public void broadcastToEvent(String message) {
+    public void broadcastToEvent(Component message) {
         participants.stream()
                 .map(Bukkit::getPlayer)
                 .filter(Objects::nonNull)
-                .forEach(player -> player.sendMessage(Component.text(message)));
+                .forEach(player -> player.sendMessage(message));
     }
 
     private void resetEventState() {

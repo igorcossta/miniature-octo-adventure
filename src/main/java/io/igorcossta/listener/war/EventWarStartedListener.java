@@ -1,9 +1,9 @@
 package io.igorcossta.listener.war;
 
 import io.igorcossta.Plugin;
+import io.igorcossta.config.GameConfigMessages;
 import io.igorcossta.event.custom.WarStartEvent;
 import io.igorcossta.manager.ColorWarManager;
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,6 +12,7 @@ import java.util.List;
 
 public class EventWarStartedListener implements Listener {
     private final ColorWarManager colorWarManager = Plugin.getColorWarManager();
+    private final GameConfigMessages messages = Plugin.getConfigurationManager().getGameMessages();
 
     @EventHandler
     public void onWarStartEvent(WarStartEvent event) {
@@ -19,7 +20,7 @@ public class EventWarStartedListener implements Listener {
 
         participants.forEach(i -> {
             i.teleport(colorWarManager.getColorWarLocations().getBattleLocation());
-            i.sendMessage(Component.text("The war is enabled"));
+            i.sendMessage(messages.sendWarIsStartedMessage());
         });
     }
 }

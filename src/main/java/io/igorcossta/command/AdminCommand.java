@@ -1,6 +1,7 @@
 package io.igorcossta.command;
 
 import io.igorcossta.Plugin;
+import io.igorcossta.config.GameConfigMessages;
 import io.igorcossta.event.Cause;
 import io.igorcossta.manager.ColorWarManager;
 import io.igorcossta.runnable.StartWarRunnable;
@@ -14,6 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class AdminCommand {
     private final Plugin plugin = Plugin.getInstance();
     private final ColorWarManager colorWarManager = Plugin.getColorWarManager();
+    private final GameConfigMessages messages = Plugin.getConfigurationManager().getGameMessages();
     private BukkitRunnable bukkitRunnable;
 
     @Command(
@@ -41,7 +43,7 @@ public class AdminCommand {
         Player p = context.getSender();
 
         if (colorWarManager.isRunning()) {
-            p.sendMessage(Component.text("The war is already open."));
+            p.sendMessage(messages.sendCantStartBecauseRunningMessage());
             return;
         }
 
@@ -62,7 +64,7 @@ public class AdminCommand {
         Player p = context.getSender();
 
         if (!colorWarManager.isRunning()) {
-            p.sendMessage(Component.text("The war is not happening."));
+            p.sendMessage(messages.sendCantStopBecauseNotRunningMessage());
             return;
         }
 

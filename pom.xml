@@ -101,5 +101,10 @@
             <version>1.7</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.Exlll.ConfigLib</groupId>
+            <artifactId>configlib-paper</artifactId>
+            <version>v4.2.0</version>
+        </dependency>
     </dependencies>
 </project>
