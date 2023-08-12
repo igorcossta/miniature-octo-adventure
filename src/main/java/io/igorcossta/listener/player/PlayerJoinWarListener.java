@@ -4,7 +4,7 @@ import io.igorcossta.Plugin;
 import io.igorcossta.config.GameConfigLocations;
 import io.igorcossta.config.GameConfigMessages;
 import io.igorcossta.event.custom.PlayerJoinWarEvent;
-import io.igorcossta.manager.ColorWarManager;
+import io.igorcossta.util.Broadcast;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,15 +13,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 public class PlayerJoinWarListener implements Listener {
-    private final ColorWarManager colorWarManager = Plugin.getColorWarManager();
     private final GameConfigLocations locations = Plugin.getLocations();
     private final GameConfigMessages messages = Plugin.getMessages();
+    private final Broadcast broadcast = Plugin.getBroadcast();
 
     @EventHandler
     public void onPlayerJoinWarEvent(PlayerJoinWarEvent event) {
         Player p = event.getPlayer();
         p.teleport(locations.getJoinLocation());
-        colorWarManager.broadcastToEvent(messages.sendJoinMessage(p.getName()));
+        broadcast.toParticipants(messages.sendJoinMessage(p.getName()));
 
         // Create a blue leather helmet
         ItemStack helmet = createColoredArmor(Material.LEATHER_HELMET, 0, 0, 0xFF);

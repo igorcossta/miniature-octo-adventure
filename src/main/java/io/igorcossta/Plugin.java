@@ -12,6 +12,7 @@ import io.igorcossta.config.GameConfigLocations;
 import io.igorcossta.config.GameConfigMessages;
 import io.igorcossta.listener.registry.ListenerRegistry;
 import io.igorcossta.manager.ColorWarManager;
+import io.igorcossta.util.Broadcast;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -19,6 +20,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -33,6 +35,8 @@ public final class Plugin extends JavaPlugin {
     private static GameConfigMessages messages;
     @Getter
     private static GameConfigLocations locations;
+    @Getter
+    private static Broadcast broadcast;
 
     @Override
     public void onEnable() {
@@ -49,13 +53,20 @@ public final class Plugin extends JavaPlugin {
         Path path;
         for (String cf : List.of("config", "locations")) {
             path = new File(getDataFolder(), cf + ".yaml").toPath();
-            if (messages == null)
-                messages = YamlConfigurations.update(path, GameConfigMessages.class, properties);
-            else locations = YamlConfigurations.update(path, GameConfigLocations.class, properties);
+            if (!Files.exists(path)) {
+                if (messages == null)
+                    messages = YamlConfigurations.update(path, GameConfigMessages.class, properties);
+                else locations = YamlConfigurations.update(path, GameConfigLocations.class, properties);
+            } else {
+                if (messages == null)
+                    messages = YamlConfigurations.load(path, GameConfigMessages.class);
+                else locations = YamlConfigurations.load(path, GameConfigLocations.class);
+            }
         }
 
         instance = this;
         colorWarManager = new ColorWarManager();
+        broadcast = new Broadcast();
 
         ListenerRegistry.of().register();
 

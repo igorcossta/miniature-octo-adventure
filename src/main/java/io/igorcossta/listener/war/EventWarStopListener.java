@@ -4,16 +4,17 @@ import io.igorcossta.Plugin;
 import io.igorcossta.config.GameConfigLocations;
 import io.igorcossta.config.GameConfigMessages;
 import io.igorcossta.event.custom.WarStopEvent;
-import org.bukkit.Bukkit;
+import io.igorcossta.util.Broadcast;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.List;
 
-public class EventExpiredListener implements Listener {
+public class EventWarStopListener implements Listener {
     private final GameConfigLocations locations = Plugin.getLocations();
     private final GameConfigMessages messages = Plugin.getMessages();
+    private final Broadcast broadcast = Plugin.getBroadcast();
 
     @EventHandler
     public void onWarStopEvent(WarStopEvent event) {
@@ -23,6 +24,6 @@ public class EventExpiredListener implements Listener {
             i.teleport(locations.getExitLocation());
             i.getInventory().clear();
         });
-        Bukkit.getServer().sendMessage(messages.sendWarIsClosedMessage(event.getCause().getMessage()));
+        broadcast.toServer(messages.sendWarIsClosedMessage(event.getCause().getMessage()));
     }
 }
