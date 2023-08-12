@@ -1,6 +1,7 @@
 package io.igorcossta.listener.player;
 
 import io.igorcossta.Plugin;
+import io.igorcossta.config.GameConfigLocations;
 import io.igorcossta.config.GameConfigMessages;
 import io.igorcossta.event.custom.PlayerDieInWarEvent;
 import io.igorcossta.manager.ColorWarManager;
@@ -10,13 +11,14 @@ import org.bukkit.event.Listener;
 
 public class PlayerDieInWarListener implements Listener {
     private final ColorWarManager colorWarManager = Plugin.getColorWarManager();
-    private final GameConfigMessages messages = Plugin.getConfigurationManager().getGameMessages();
+    private final GameConfigLocations locations = Plugin.getLocations();
+    private final GameConfigMessages messages = Plugin.getMessages();
 
     @EventHandler
     public void onPlayerDieInWarEvent(PlayerDieInWarEvent event) {
         Player player = event.getPlayer();
 
-        player.teleport(colorWarManager.getColorWarLocations().getExitLocation());
+        player.teleport(locations.getExitLocation());
         colorWarManager.broadcastToEvent(messages.sendDeathMessage(player.getName()));
 
         colorWarManager.clearInventory(player);

@@ -16,7 +16,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 public class PlayerDamageListener implements org.bukkit.event.Listener {
     private final Plugin plugin = Plugin.getInstance();
     private final ColorWarManager colorWarManager = Plugin.getColorWarManager();
-    private final GameConfigMessages messages = Plugin.getConfigurationManager().getGameMessages();
+    private final GameConfigMessages messages = Plugin.getMessages();
 
     @EventHandler
     public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {

@@ -1,6 +1,7 @@
 package io.igorcossta.manager;
 
 import io.igorcossta.Plugin;
+import io.igorcossta.config.GameConfigLocations;
 import io.igorcossta.config.GameConfigMessages;
 import io.igorcossta.event.Cause;
 import io.igorcossta.event.custom.PlayerJoinWarEvent;
@@ -13,6 +14,7 @@ import net.kyori.adventure.text.Component;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
 import java.util.List;
@@ -24,11 +26,12 @@ import java.util.Set;
 public class ColorWarManager {
     private final Plugin plugin = Plugin.getInstance();
     private final Economy econ = Plugin.getEcon();
-    private final ColorWarLocations colorWarLocations = new ColorWarLocations();
-    private final GameConfigMessages messages = Plugin.getConfigurationManager().getGameMessages();
+    private final GameConfigLocations locations = Plugin.getLocations();
+    private final GameConfigMessages messages = Plugin.getMessages();
     private Set<String> participants = new HashSet<>();
     private boolean isRunning = false;
     private boolean isWarStarted = false;
+    public static BukkitRunnable bukkitRunnable;
 
     public void playerJoin(Player player) {
         participants.add(player.getName());
@@ -65,7 +68,7 @@ public class ColorWarManager {
         Bukkit.getServer().sendMessage(messages.sendVictoryMessage(winner));
 
         clearInventory(player);
-        player.teleport(colorWarLocations.getExitLocation());
+        player.teleport(locations.getExitLocation());
         econ.depositPlayer(player, 1);
         resetEventState();
     }

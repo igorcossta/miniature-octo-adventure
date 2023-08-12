@@ -1,16 +1,18 @@
 package io.igorcossta;
 
+import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.ConditionFailedException;
+import co.aikar.commands.PaperCommandManager;
 import de.exlll.configlib.ConfigLib;
+import de.exlll.configlib.NameFormatters;
 import de.exlll.configlib.YamlConfigurationProperties;
 import de.exlll.configlib.YamlConfigurations;
-import io.igorcossta.command.registry.CommandRegistry;
+import io.igorcossta.command.ColorWar;
+import io.igorcossta.config.GameConfigLocations;
 import io.igorcossta.config.GameConfigMessages;
 import io.igorcossta.listener.registry.ListenerRegistry;
 import io.igorcossta.manager.ColorWarManager;
-import io.igorcossta.manager.ConfigurationManager;
 import lombok.Getter;
-import me.saiintbrisson.bukkit.command.BukkitFrame;
-import me.saiintbrisson.bukkit.command.executor.BukkitSchedulerExecutor;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -18,18 +20,19 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 
 public final class Plugin extends JavaPlugin {
     @Getter
     private static Plugin instance;
     @Getter
-    private static BukkitFrame bukkitFrame;
-    @Getter
     private static Economy econ;
     @Getter
     private static ColorWarManager colorWarManager;
     @Getter
-    private static ConfigurationManager configurationManager;
+    private static GameConfigMessages messages;
+    @Getter
+    private static GameConfigLocations locations;
 
     @Override
     public void onEnable() {
@@ -40,18 +43,30 @@ public final class Plugin extends JavaPlugin {
         }
 
         // set up the config
-        YamlConfigurationProperties properties = ConfigLib.BUKKIT_DEFAULT_PROPERTIES.toBuilder().build();
-        Path gameConfigMessagesPath = new File(getDataFolder(), "config.yaml").toPath();
-        GameConfigMessages gameConfigMessages = YamlConfigurations.update(gameConfigMessagesPath, GameConfigMessages.class, properties);
-        configurationManager = new ConfigurationManager(gameConfigMessages, gameConfigMessagesPath);
+        YamlConfigurationProperties properties = ConfigLib.BUKKIT_DEFAULT_PROPERTIES.toBuilder()
+                .setNameFormatter(NameFormatters.UPPER_UNDERSCORE)
+                .build();
+        Path path;
+        for (String cf : List.of("config", "locations")) {
+            path = new File(getDataFolder(), cf + ".yaml").toPath();
+            if (messages == null)
+                messages = YamlConfigurations.update(path, GameConfigMessages.class, properties);
+            else locations = YamlConfigurations.update(path, GameConfigLocations.class, properties);
+        }
 
         instance = this;
-        bukkitFrame = new BukkitFrame(this);
         colorWarManager = new ColorWarManager();
 
-        bukkitFrame.setExecutor(new BukkitSchedulerExecutor(this));
-        CommandRegistry.of().register();
         ListenerRegistry.of().register();
+
+        PaperCommandManager manager = new PaperCommandManager(this);
+        manager.registerCommand(new ColorWar());
+        manager.getCommandConditions().addCondition("player", context -> {
+            BukkitCommandIssuer issuer = context.getIssuer();
+            if (!issuer.isPlayer()) {
+                throw new ConditionFailedException("sender must be a player");
+            }
+        });
     }
 
     private boolean setupEconomy() {

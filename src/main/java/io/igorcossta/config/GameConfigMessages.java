@@ -33,6 +33,12 @@ public class GameConfigMessages {
     @Comment("Displayed when an attempt to stop the Color War event fails because it is not currently active")
     private String cantStopBecauseNotRunningMessage = "<yellow>The <rainbow:!2><b>Color War</b></rainbow> is not currently active.";
 
+    @Comment("")
+    private String newLocationSet = "<green>You define a new location for {location}";
+
+    @Comment("")
+    private String locationNotFound = "<red>Location {location} not found";
+
     // Messages for server messages
     @Comment("Displayed when the Color War event is open for participation")
     private String warIsOpenMessage = "<yellow>The <rainbow:!2><b>Color War</b></rainbow> event is currently open for participation.";
@@ -84,6 +90,16 @@ public class GameConfigMessages {
 
     public Component sendCantStopBecauseNotRunningMessage() {
         return buildMessage(cantStopBecauseNotRunningMessage);
+    }
+
+    public Component sendNewLocationSet(String location) {
+        String messageTemplate = newLocationSet.replace("{location}", location);
+        return buildMessage(messageTemplate);
+    }
+
+    public Component sendLocationNotFound(String location) {
+        String messageTemplate = locationNotFound.replace("{location}", location);
+        return buildMessage(messageTemplate);
     }
 
     // server messages builder
